@@ -25,4 +25,8 @@ def profesores(request):
     return render(request, "profesores.html")
 
 
+def alumnos(request):
+    return render(request, "alumnos.html")
+
+
 
