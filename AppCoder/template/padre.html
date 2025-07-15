@@ -24,8 +24,9 @@
                 <a class="btn btn-primary" href="{% url 'profesores' %}" >Profesores</a>
                 <a class="btn btn-primary" href="{% url 'alumnos' %}">Alumnos</a>
                 <a class="btn btn-primary" href="{% url 'cursos' %}">Cursos</a>
-                <a class="btn btn-danger" href="">LogIn</a>
-                <a class="btn btn-danger" href="">SignUp</a>                
+                <a class="btn btn-danger" href="{% url 'Login' %}">LogIn</a>
+                <a class="btn btn-danger" href="{% url 'Register' %}">SignUp</a>     
+                <p>Usuario: {{ user.username }}</p>           
             </div>
         </nav>
         <!-- Masthead-->

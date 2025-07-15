@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from AppCoder.models import Curso
 from django.template import loader
 from AppCoder.forms import Curso_formulario
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth import authenticate, login 
 # Create your views here.
 
 
@@ -113,3 +115,43 @@ def editar( request , id ):
 
 
 
+def login_request(request):
+
+    if request.method == "POST":
+        
+        form = AuthenticationForm(request, data=request.POST)
+
+        if form.is_valid():
+
+                usuario = form.cleaned_data.get("username")
+                contra =  form.cleaned_data.get("password")
+
+                user = authenticate(username=usuario, password=contra)
+
+                if user is not None:
+                    login(request,user)
+                    return render(request, "inicio.html", {"mensaje":f"Bienvenido {usuario}"})
+                else:
+                    return render(request, "error.html", {"mensaje":f"Usuario no encontrado: {usuario}"})
+
+
+    form = AuthenticationForm()
+
+    return render(request, "login.html", {"form":form})
+
+
+
+
+
+def register(request):
+
+    if request.method == "POST":
+       
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return HttpResponse("Usuario creado exitosamente")
+    else:
+        form = UserCreationForm()
+    return render(request, "registro.html", {"form":form})
