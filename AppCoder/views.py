@@ -2,15 +2,17 @@ from django.shortcuts import render # type: ignore
 from django.http import HttpResponse
 from AppCoder.models import Curso
 from django.template import loader
-from AppCoder.forms import Curso_formulario
+from AppCoder.forms import Curso_formulario, UserEditForm
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login 
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
 
 def inicio(request):
     return render(request, "padre.html")
+
 
 
 def cursos(request):
@@ -29,7 +31,7 @@ def alta_curso(request, nombre):
     return HttpResponse(msj)
 
 
-
+@login_required
 def profesores(request):
     return render(request, "profesores.html")
 
@@ -155,3 +157,31 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, "registro.html", {"form":form})
+
+
+
+
+@login_required
+def editarPerfil( request ):
+
+    usuario = request.user
+
+    if request.method == "POST":
+        
+        miFormulario = UserEditForm(request.POST)
+
+        if miFormulario.is_valid():
+
+            informacion = miFormulario.cleaned_data
+            usuario.email = informacion["email"]
+            password = informacion["password1"]
+            usuario.set_password(password)
+            usuario.save()
+
+            return render(request, "inicio.html")            
+
+
+    else:
+        miFormulario = UserEditForm(initial={'email':usuario.email})
+    
+    return render(request, "editar_perfil.html" ,{"miFormulario":miFormulario, "usuario":usuario})
